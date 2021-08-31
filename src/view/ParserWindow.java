@@ -29,7 +29,7 @@ public class ParserWindow
       frame.setResizable(false);
 
       panel = new JPanel();
-      panel.setLayout(new GridLayout(6, 2));
+      panel.setLayout(new GridLayout(6, 1));
       frame.add(panel);
 
       table = new JTable(1, 2);
@@ -41,11 +41,56 @@ public class ParserWindow
 
       JButton uploadButton = new JButton("Upload");
       JLabel uploadLabel = new JLabel("Upload a file");
-      uploadButton.addActionListener(new UploadListener());
+
+      uploadButton.addActionListener(new ActionListener()
+      {
+         @Override
+            public void actionPerformed(ActionEvent e)
+            {
+               JFileChooser fileChooser = new JFileChooser();
+               fileChooser.setCurrentDirectory(new java.io.File("."));
+               fileChooser.setDialogTitle("Select a file");
+               fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+               // select only .log files and directories
+               fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+                  @Override
+                  public boolean accept(java.io.File file) {
+                     String filename = file.getName();
+                     return filename.endsWith(".log") || file.isDirectory();
+                  }
+         
+                  @Override
+                  public String getDescription() {
+                        return null;
+                  }
+               });
+               fileChooser.setAcceptAllFileFilterUsed(false);
+               if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) 
+               {
+                  filePath = fileChooser.getSelectedFile().getAbsolutePath();
+               }
+            }
+      });
 
       JButton parseButton = new JButton("Parse");
       JLabel parseLabel = new JLabel("Parse the file");
 
+      parseButton.addActionListener(new ActionListener()
+      {
+         @Override
+            public void actionPerformed(ActionEvent e)
+            {
+               if (filePath != null)
+               {
+                  System.out.println("Parsing file: " + filePath);
+               }
+               else
+               {
+                  System.out.println("No file selected");
+               }
+            }
+      });
+      
       // add everything to the grid
       panel.add(table);
       panel.add(uploadButton);
