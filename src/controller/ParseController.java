@@ -6,7 +6,9 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ParseController {
    private static ParseController instance = null;
@@ -40,67 +42,65 @@ public class ParseController {
          return null;
       }
 
-      // Parse the raw data into a 2D array
-      String[][] data = new String[rawData.size()][2];
-      for (int i = 0; i < rawData.size(); i++) 
+      ArrayList<String[]> rawDataArrayList = new ArrayList<>();
+      for (String line : rawData)
       {
-         data[i] = rawData.get(i).split(" ");
+         rawDataArrayList.add(line.split(" "));
       }
       rawData = null;
-      
-      // get the unique webpages from the data
-      int uniqueCount = 0;
-      for (int i = 0; i < data.length; i++)
-      {
-         for (int j = 0; j < ...; i++)
-         {
-            
-         }
-      }
-      
-      // create the array of pages
-      Page[] parsedData = new Page[uniqueCount];
 
-      // get the views for each page.
-      for (int i = 0; i < parsedData.length; i++)
+      // getting unique pages.
+      ArrayList<Page> pages = new ArrayList<>();
+      for (String[] datum : rawDataArrayList)
       {
-         parsedData[i] = new Page(data[i][0]);
-         for (String[] datum : data) {
-            if (datum[0].equals(parsedData[i].url)) {
-               parsedData[i].views++;
+         Page singlePage = new Page(datum[0]);
+         if (!pages.contains(singlePage))
+         {
+            pages.add(singlePage);
+         }
+      }
+
+      // getting views
+      for (Page page : pages)
+      {
+         for (String[] view : rawDataArrayList)
+         {
+            if (page.url.equals(view[0]))
+            {
+               page.views++;
             }
          }
       }
-      
-      // get the unique views for each page.
-      int pushIndex = 0;
-      for (Page page : parsedData)
+
+      // getting unique views
+      for (Page page : pages)
       {
-         String[] ipAddresses = new String[data.length];
-         for (int i = 0; i < data.length; i++) {
-            String dataUrl = data[i][0];
-            String dataIp = data[i][1];
-            if (page.url == dataUrl && checkInArray(dataIp, ipAddresses)) {
+         ArrayList<String> ips = new ArrayList<>();
+         for (String[] view : rawDataArrayList)
+         {
+            if (!ips.contains(view[1]))
+            {
+               ips.add(view[1]);
                page.uniqueViews++;
-               ipAddresses[pushIndex++] = dataIp;
             }
          }
       }
-      return parsedData;
+      return null;
    }
+
 
    private boolean checkInArray(String string, String[] array)
    {
       for (String s : array) {
          if (s == null) {
-            return true;
+            return false;
          }
 
          if (s.equals(string)) {
-            return false;
+            return true;
          }
       }
-      return true;
+      return false;
    }
    
 }

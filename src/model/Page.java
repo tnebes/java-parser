@@ -1,6 +1,8 @@
 package model;
 
-public class Page 
+import java.util.Objects;
+
+public class Page
 {
 
     public Page(String url)
@@ -13,4 +15,17 @@ public class Page
     public String url;
     public int views;
     public int uniqueViews;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Page page = (Page) o;
+        return Objects.equals(url, page.url);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(url);
+    }
 }
