@@ -5,20 +5,20 @@ import core.Config;
 import model.Page;
 
 import javax.swing.*;
-import javax.swing.table.TableModel;
+import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import java.util.ArrayList;
 
 public class ParserWindow {
     private JFrame frame;
     private JPanel panel;
     private JTable table;
     private String filePath;
-    private Page[] fileContents;
-    private String[] tableHeaders;
-    private Object[][] tableData;
+    private String[] columnNames;
 
     public ParserWindow() {
         initComponents();
@@ -35,9 +35,9 @@ public class ParserWindow {
         panel.setLayout(new GridLayout(6, 1));
         frame.add(panel);
 
-        table = new JTable(null, tableHeaders);
-
-
+        columnNames = new String[]{"URL", "Views", "Unique views"};
+        table = new JTable(new String[][]{{""}}, columnNames);
+//        table = new JTable();
         table.setEnabled(false);
 
         frame.add(new JScrollPane(table));
@@ -81,9 +81,11 @@ public class ParserWindow {
                 if (filePath != null) {
                     System.out.println("Parsing file: " + filePath);
                     ParseController parseController = ParseController.getInstance();
-                    fileContents = parseController.parse(filePath);
+                    ArrayList<Page> pages = parseController.parse(filePath);
+                    parseController.sort(pages);
+                    updateTable(pages);
                 } else {
-                    System.out.println("No file selected");
+                    System.out.println("No file selected!");
                 }
             }
         });
@@ -94,19 +96,15 @@ public class ParserWindow {
         panel.add(uploadLabel);
         panel.add(parseButton);
         panel.add(parseLabel);
-
     }
 
     public void show() {
         frame.setVisible(true);
     }
 
-    public void updateTable()
+    public void updateTable(ArrayList<Page> pages)
     {
-        
+        table.setModel(new DefaultTableModel());
     }
 
-    public interface PathGetter {
-        void run(String path);
-    }
 }

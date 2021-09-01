@@ -21,7 +21,7 @@ public class ParseController {
         return instance;
     }
 
-    public Page[] parse(String filePath) {
+    public ArrayList<Page> parse(String filePath) {
         ArrayList<String> rawData = new ArrayList<String>();
         try {
             FileReader fileReader = new FileReader(filePath);
@@ -70,9 +70,11 @@ public class ParseController {
                 }
             }
         }
+        return pages;
+    }
 
-        // sort by views
-        pages.sort((Page p1, Page p2) -> p2.views - p1.views);  
-        return pages.toArray(new Page[pages.size()]);
+    public void sort(ArrayList<Page> pages)
+    {
+        pages.sort((Page p1, Page p2) -> p2.views - p1.views);
     }
 }
