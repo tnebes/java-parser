@@ -1,25 +1,20 @@
 package view;
 
-import javax.swing.*;
-
 import controller.ParseController;
+import core.Config;
+import model.Page;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import core.*;
 
 public class ParserWindow {
     private JFrame frame;
     private JPanel panel;
     private JTable table;
     private String filePath;
-    private String[][] fileContents;
-
-    public interface PathGetter {
-        void run(String path);
-    }
+    private Page[] fileContents;
 
     public ParserWindow() {
         initComponents();
@@ -83,8 +78,8 @@ public class ParserWindow {
             public void actionPerformed(ActionEvent e) {
                 if (filePath != null) {
                     System.out.println("Parsing file: " + filePath);
-                     ParseController parseController = ParseController.getInstance();
-                 parseController.parse(filePath);
+                    ParseController parseController = ParseController.getInstance();
+                    fileContents = parseController.parse(filePath);
                 } else {
                     System.out.println("No file selected");
                 }
@@ -102,5 +97,9 @@ public class ParserWindow {
 
     public void show() {
         frame.setVisible(true);
+    }
+
+    public interface PathGetter {
+        void run(String path);
     }
 }

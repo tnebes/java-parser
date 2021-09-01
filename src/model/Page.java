@@ -2,19 +2,17 @@ package model;
 
 import java.util.Objects;
 
-public class Page
-{
-
-    public Page(String url)
-    {
-       this.url = url;
-       this.views = 0;
-       this.uniqueViews = 0;
-    }
+public class Page {
 
     public String url;
     public int views;
     public int uniqueViews;
+
+    public Page(String url) {
+        this.url = url;
+        this.views = 0;
+        this.uniqueViews = 0;
+    }
 
     @Override
     public boolean equals(Object o) {
