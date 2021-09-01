@@ -5,6 +5,8 @@ import core.Config;
 import model.Page;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +17,8 @@ public class ParserWindow {
     private JTable table;
     private String filePath;
     private Page[] fileContents;
+    private String[] tableHeaders;
+    private Object[][] tableData;
 
     public ParserWindow() {
         initComponents();
@@ -31,17 +35,15 @@ public class ParserWindow {
         panel.setLayout(new GridLayout(6, 1));
         frame.add(panel);
 
-        table = new JTable(1, 3);
-        table.setValueAt("Name", 0, 0);
-        table.setValueAt("Visits", 0, 1);
-        table.setValueAt("Unique views", 0, 2);
+        table = new JTable(null, tableHeaders);
+
+
         table.setEnabled(false);
 
-        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(new JScrollPane(table));
 
         JButton uploadButton = new JButton("Select");
         JLabel uploadLabel = new JLabel("Select a file");
-
 
         uploadButton.addActionListener(new ActionListener() {
             @Override
@@ -97,6 +99,11 @@ public class ParserWindow {
 
     public void show() {
         frame.setVisible(true);
+    }
+
+    public void updateTable()
+    {
+        
     }
 
     public interface PathGetter {

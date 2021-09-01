@@ -71,6 +71,8 @@ public class ParseController {
             }
         }
 
+        // sort by views
+        pages.sort((Page p1, Page p2) -> p2.views - p1.views);  
         return pages.toArray(new Page[pages.size()]);
     }
 }
