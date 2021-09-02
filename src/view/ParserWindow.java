@@ -6,25 +6,23 @@ import model.Page;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.util.ArrayList;
 
 public class ParserWindow {
     private JFrame frame;
     private JPanel panel;
+    private GridBagConstraints constraints;
     private JTable table;
     private String filePath;
     private JButton uploadButton;
     private JLabel uploadLabel;
     private JButton parseButton;
     private JLabel parseLabel;
-    private GridBagConstraints constraints;
-    private TableModel tableModel;
+    private DefaultTableModel tableModel;
+    private JScrollPane scrollPane;
 
     public ParserWindow() {
         initComponents();
@@ -35,24 +33,16 @@ public class ParserWindow {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(Config.WINDOW_X, Config.WINDOW_Y);
         frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
+        frame.setResizable(true);
 
-        panel = new JPanel();
-
-        //set up panel grid
-        panel.setLayout(new GridBagLayout());
+        panel = new JPanel(new GridBagLayout());
         constraints = new GridBagConstraints();
 
-        String[] columnNames = new String[]{"URL", "Views", "Unique views"};
-        tableModel = new DefaultTableModel(new String[][]{{""}}, columnNames);
-        table = new JTable(tableModel){
-            @Override
-            public Dimension getPreferredScrollableViewportSize()
-            {
-                return new Dimension(100,300);
-            }
-        };
-        table.setEnabled(false);
+
+        tableModel = new DefaultTableModel(new Object[]{"URL", "Views", "Unique views"}, 0);
+        table = new JTable(tableModel);
+
+        scrollPane = new JScrollPane(table);
 
         uploadButton = new JButton("Select");
         uploadLabel = new JLabel("Select a file");
@@ -91,68 +81,54 @@ public class ParserWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (filePath != null) {
-                    System.out.println("Parsing file: " + filePath);
                     ParseController parseController = ParseController.getInstance();
                     ArrayList<Page> pages = parseController.parse(filePath);
                     parseController.sort(pages);
                     updateTable(pages);
                 } else {
-                    System.out.println("No file selected!");
+                    JOptionPane.showMessageDialog(null, "No file selected!");
                 }
             }
         });
 
         // TODO: create and add the panel
-        frame.add(panel);
         this.design();
         this.show();
     }
 
-    public void design()
-    {
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(new JScrollPane(table));
+    public void design() {
+        table.setEnabled(false);
+        constraints.gridwidth = 5;
+        panel.add(scrollPane, constraints);
 
-
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.gridwidth = 10;
-        constraints.gridheight = 2;
-        panel.add(table, constraints);
-
-        constraints.gridx = 0;
-        constraints.gridy = 2;
         constraints.gridwidth = 1;
-        constraints.gridheight = 1;
+        constraints.gridy = 1;
         panel.add(uploadLabel, constraints);
 
-        constraints.gridx = 0;
-        constraints.gridy = 3;
+        constraints.gridy = 2;
         panel.add(uploadButton, constraints);
 
-        constraints.gridx = 1;
-        constraints.gridy = 2;
+        constraints.gridy = 1;
         panel.add(parseLabel, constraints);
 
-        constraints.gridx = 1;
-        constraints.gridy = 3;
+        constraints.gridy = 2;
         panel.add(parseButton, constraints);
 
-
-        for (JButton button : new JButton[]{uploadButton, parseButton})
-        {
-            button.setSize(100, 50);
-        }
+        frame.add(panel);
     }
 
     public void show() {
         frame.setVisible(true);
-        panel.setVisible(true);
     }
 
-    public void updateTable(ArrayList<Page> pages)
-    {
-//        table.setModel(new DefaultTableModel());
+    public void updateTable(ArrayList<Page> pages) {
+        if (pages == null) {
+            return;
+        }
+        tableModel.setRowCount(0);
+        for (Page page : pages) {
+            tableModel.addRow(new Object[]{page.url, page.views, page.uniqueViews});
+        }
     }
 
 }

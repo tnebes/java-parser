@@ -73,8 +73,7 @@ public class ParseController {
         return pages;
     }
 
-    public void sort(ArrayList<Page> pages)
-    {
+    public void sort(ArrayList<Page> pages) {
         pages.sort((Page p1, Page p2) -> p2.views - p1.views);
     }
 }
